@@ -11,6 +11,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
+import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
 import net.minestom.server.event.server.ServerListPingEvent;
 import net.minestom.server.instance.InstanceContainer;
@@ -32,6 +33,7 @@ public class Server {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
 
 	private static final ComponentSerializer<Component, TextComponent, String> SERIALIZER = PlainTextComponentSerializer.plainText();
+	private static final GlobalEventHandler GLOBAL_EVENT_HANDLER = MinecraftServer.getGlobalEventHandler();
 
 	private static final String DEFAULT_ADDRESS = "0.0.0.0";
 	private static final int DEFAULT_PORT = 25565;
@@ -59,15 +61,6 @@ public class Server {
 			player.setRespawnPoint(new Pos(0.5, 50.0, 0.5));
 		});
 
-		EventManager.onEvent(ServerListPingEvent.class, event -> {
-			ResponseData responseData = new ResponseData();
-			responseData.setMaxPlayer(1663);
-			responseData.setVersion("MSNT server 1.21.4");
-			responseData.setOnline(-1);
-			responseData.setDescription("MSNT Server");
-			event.setResponseData(responseData);
-		});
-
 		PluginManager.init();
 		setBranding();
 		String address = DEFAULT_ADDRESS;
@@ -75,6 +68,10 @@ public class Server {
 		minecraftServer.start(address, port);
 		LOGGER.info("Server started on {}:{}.", address, port);
 		LOGGER.info("Server version: {}", MinecraftServer.VERSION_NAME);
+	}
+
+	public static GlobalEventHandler getGlobalEventHandler() {
+		return GLOBAL_EVENT_HANDLER;
 	}
 
 	private static void setBranding() {
