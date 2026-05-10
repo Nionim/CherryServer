@@ -19,6 +19,7 @@ repositories {
 dependencies {
     implementation("net.minestom:minestom-snapshots:$minestomVersion")
 	implementation("ch.qos.logback:logback-classic:1.5.18")
+	implementation("org.jline:jline:3.30.0")
 }
 
 tasks {

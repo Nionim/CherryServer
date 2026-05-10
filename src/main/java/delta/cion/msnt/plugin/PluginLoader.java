@@ -24,7 +24,7 @@ public class PluginLoader {
 
 
 		for (File jarFile : getNewExtensions()) loadJarExtension(jarFile);
-		LOGGER.info("Total extensions loaded: {}", plugins.size());
+		LOGGER.info("Total plugins loaded: {}", plugins.size());
 		enableAll();
 	}
 
@@ -34,7 +34,7 @@ public class PluginLoader {
 		plugins.put(plugin.getId(), plugin);
 		extensionTimestamps.put(jarFile, jarFile.lastModified());
 		plugin.onLoad();
-		LOGGER.info("Loaded extension: {}", plugin.getId());
+		LOGGER.info("Loaded plugin: {}", plugin.getId());
 	}
 
 	private Plugin isValidExtension(File jarFile) {
@@ -45,9 +45,9 @@ public class PluginLoader {
 			);
 
 			Properties properties = new Properties();
-			try (java.io.InputStream in = classLoader.getResourceAsStream("extension.properties")) {
+			try (java.io.InputStream in = classLoader.getResourceAsStream("plugin.properties")) {
 				if (in == null) {
-					LOGGER.warn("No extension.properties found in {}", jarFile.getName());
+					LOGGER.warn("No plugin.properties found in {}", jarFile.getName());
 					return null;
 				}
 				properties.load(in);
@@ -64,21 +64,21 @@ public class PluginLoader {
 
 			if (instance instanceof Plugin) return (Plugin) instance;
 			else {
-				LOGGER.error("Class {} does not implement Extension", mainClassName);
+				LOGGER.error("Class {} does not implement Plugin", mainClassName);
 				return null;
 			}
 		} catch (Exception ex) {
-			LOGGER.error("Invalid extension JAR: {}: {}", jarFile.getName(), ex.getMessage());
+			LOGGER.error("Invalid plugin JAR: {}: {}", jarFile.getName(), ex.getMessage());
 			return null;
 		}
 	}
 
 	public void updateExtensions() {
-		LOGGER.info("Checking for extension updates...");
+		LOGGER.info("Checking for plugin updates...");
 		for (File jarFile : getRemovedExtensions()) removeExtension(jarFile);
 		for (File jarFile : getModifiedExtensions()) reloadExtension(jarFile);
 		for (File jarFile : getNewExtensions()) loadJarExtension(jarFile);
-		LOGGER.info("Extension update check completed.");
+		LOGGER.info("Plugin update check completed.");
 	}
 
 	private void removeExtension(File jarFile) {
@@ -86,12 +86,12 @@ public class PluginLoader {
 		if (id == null) return;
 		disableById(id);
 		unload(id);
-		LOGGER.info("Removed extension: {}", jarFile.getName());
+		LOGGER.info("Removed plugin: {}", jarFile.getName());
 	}
 
 	private void reloadExtension(File jarFile) {
 		UUID id = getExtensionIdByFile(jarFile);
-		LOGGER.info("Modified extension detected: {}. Reloading...", jarFile.getName());
+		LOGGER.info("Modified plugin detected: {}. Reloading...", jarFile.getName());
 
 		if (id != null) {
 			disableById(id);
