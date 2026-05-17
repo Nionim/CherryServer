@@ -23,6 +23,7 @@ target/
 gradle/wrapper/gradle-wrapper.jar
 
 # Server
+server.properties
 plugins/
 logs/
 crash_logs/
