@@ -85,23 +85,31 @@ public class WhiteList {
 	}
 
 	private static void compareByName() {
+		List<PlayerInfo> toAdd = new ArrayList<>();
+		List<PlayerInfo> toRemove = new ArrayList<>();
 		for (PlayerInfo playerInfo : WHITELIST) {
 			if (playerInfo.name().isBlank()) continue;
 			Player player = CONNECTION_MANAGER.getOnlinePlayerByUsername(playerInfo.name());
 			if (player == null) continue;
-			WHITELIST.add(new PlayerInfo(playerInfo.name(), player.getUuid(), null));
-			WHITELIST.remove(playerInfo);
+			toAdd.add(new PlayerInfo(playerInfo.name(), player.getUuid(), null));
+			toRemove.add(playerInfo);
 		}
+		WHITELIST.addAll(toAdd);
+		WHITELIST.removeAll(toRemove);
 	}
 
 	private static void compareByUUID() {
+		List<PlayerInfo> toAdd = new ArrayList<>();
+		List<PlayerInfo> toRemove = new ArrayList<>();
 		for (PlayerInfo playerInfo : WHITELIST) {
 			if (playerInfo.uuid() == null) continue;
 			Player player = CONNECTION_MANAGER.getOnlinePlayerByUuid(playerInfo.uuid());
 			if (player == null) continue;
-			WHITELIST.add(new PlayerInfo(player.getUsername(), playerInfo.uuid(), null));
-			WHITELIST.remove(playerInfo);
+			toAdd.add(new PlayerInfo(player.getUsername(), playerInfo.uuid(), null));
+			toRemove.add(playerInfo);
 		}
+		WHITELIST.addAll(toAdd);
+		WHITELIST.removeAll(toRemove);
 	}
 
 	private static Collection<Player> getOnlinePlayers() {
@@ -110,16 +118,16 @@ public class WhiteList {
 
 	public static boolean isWhitelisted(String playerName) {
 		for (PlayerInfo playerInfo : WHITELIST) {
-			if (playerInfo.name().isBlank()) return false;
-			if (playerInfo.name().equals(playerName)) return true;
+			if (playerInfo.name() != null && playerInfo.name().equals(playerName))
+				return true;
 		}
 		return false;
 	}
 
 	public static boolean isWhitelisted(UUID playerUUID) {
 		for (PlayerInfo playerInfo : WHITELIST) {
-			if (playerInfo.uuid() == null) return false;
-			if (playerInfo.uuid().equals(playerUUID)) return true;
+			if (playerInfo.uuid() != null && playerInfo.uuid().equals(playerUUID))
+				return true;
 		}
 		return false;
 	}
@@ -139,6 +147,7 @@ public class WhiteList {
 	public static void removeFromWhitelist(UUID playerUUID) {
 		if (!isWhitelisted(playerUUID)) return;
 		for (PlayerInfo playerInfo : WHITELIST) {
+			if (playerInfo.uuid() == null) continue;
 			if (playerInfo.uuid().equals(playerUUID)) {
 				WHITELIST.remove(playerInfo);
 				break;
@@ -150,6 +159,7 @@ public class WhiteList {
 	public static void removeFromWhitelist(String playerName) {
 		if (!isWhitelisted(playerName)) return;
 		for (PlayerInfo playerInfo : WHITELIST) {
+			if (playerInfo.name().isBlank()) continue;
 			if (playerInfo.name().equals(playerName)) {
 				WHITELIST.remove(playerInfo);
 				break;
@@ -172,5 +182,9 @@ public class WhiteList {
 				return new PlayerInfo(player.getUsername(), playerUUID, null);
 		}
 		return new PlayerInfo(null, playerUUID, null);
+	}
+
+	public static ArrayList<PlayerInfo> getWhitelist() {
+		return WHITELIST;
 	}
 }

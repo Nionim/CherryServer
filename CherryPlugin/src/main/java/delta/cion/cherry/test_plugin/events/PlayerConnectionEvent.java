@@ -33,17 +33,22 @@ public class PlayerConnectionEvent {
 			String playerName = player.getUsername();
 
 			if (isWhitelisted(player))
-				player.kick("Sorry but you cannot connect to this server.");
+				LOGGER.info("Player {} [{}] whitelisted", playerName, player.getUuid());
+			else {
+				LOGGER.info("Player {} [{}] is not whitelisted", playerName, player.getUuid());
+				player.kick("Sorry, "+playerName+", but you cannot connect to this server.");
+			}
 
 			event.setSpawningInstance(instanceContainer);
 			player.setRespawnPoint(Main.getSpawnPosition());
-			LOGGER.info("Player {} connected", playerName);
+			LOGGER.info("Player {} [{}] connected", playerName, player.getUuid());
 		});
 	}
 
 	public static DeltaEvent<PlayerDisconnectEvent> exitPlayer() {
 		return new DeltaEvent<>(PlayerDisconnectEvent.class, event -> {
-			LOGGER.info("Player {} disconnected", event.getPlayer().getUsername());});
+			Player player = event.getPlayer();
+			LOGGER.info("Player {} [{}] disconnected", player.getUsername(), player.getUuid());});
 	}
 
 	private static boolean isWhitelisted(Player player) {

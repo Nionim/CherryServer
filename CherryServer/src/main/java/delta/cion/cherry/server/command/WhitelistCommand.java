@@ -2,15 +2,26 @@ package delta.cion.cherry.server.command;
 
 import delta.cion.cherry.api.command.DeltaCommand;
 import delta.cion.cherry.api.online.WhiteList;
+import delta.cion.cherry.server.config.property.PropertiesHandler;
+import delta.cion.cherry.server.console.LogbackConfig;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.CommandContext;
 import net.minestom.server.command.builder.arguments.ArgumentString;
 import net.minestom.server.command.builder.arguments.ArgumentType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.swing.plaf.basic.BasicSplitPaneUI;
+import java.io.*;
+import java.util.Properties;
 import java.util.UUID;
 
 public class WhitelistCommand extends DeltaCommand<Command> {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistCommand.class);
+
+	private static final File SERVER_PROPERTIES_FILE = new File("server.properties");
 
 	public WhitelistCommand() {
 		super(new Command("whitelist"));
@@ -35,6 +46,10 @@ public class WhitelistCommand extends DeltaCommand<Command> {
 		Command disableCommand = new Command("disable");
 		disableCommand.addSyntax(this::disableWhitelist);
 		getCommand().addSubcommand(disableCommand);
+
+		Command statusCommand = new Command("status");
+		statusCommand.addSyntax(this::whitelistStatus);
+		getCommand().addSubcommand(statusCommand);
 	}
 
 	private void addPlayer(CommandSender sender, CommandContext context) {
@@ -73,13 +88,27 @@ public class WhitelistCommand extends DeltaCommand<Command> {
 	}
 
 	private void enableWhitelist(CommandSender sender, CommandContext context) {
+		if (WhiteList.getStatus()) {
+			sender.sendMessage("Whitelist already enabled!");
+			return; }
 		WhiteList.setStatus(true);
+		setWhitelistStatus(true);
 		sender.sendMessage("Whitelist enabled");
 	}
 
 	private void disableWhitelist(CommandSender sender, CommandContext context) {
+		if (!WhiteList.getStatus()) {
+			sender.sendMessage("Whitelist already disabled!");
+			return; }
 		WhiteList.setStatus(false);
+		setWhitelistStatus(false);
 		sender.sendMessage("Whitelist disabled");
+	}
+
+	private void whitelistStatus(CommandSender sender, CommandContext context) {
+		int whitelistedPlayersCount = WhiteList.getWhitelist().size();
+		sender.sendMessage("Whitelist status: ["+WhiteList.getStatus()+"].");
+		sender.sendMessage("Whitelisted players count: "+whitelistedPlayersCount+".");
 	}
 
 	private UUID parseUUID(String playerName) {
@@ -87,5 +116,19 @@ public class WhitelistCommand extends DeltaCommand<Command> {
 			return UUID.fromString(playerName);
 		} catch (IllegalArgumentException ignored) {}
 		return null;
+	}
+
+	private void setWhitelistStatus(boolean status) {
+		try (InputStream propertiesStream = new FileInputStream(SERVER_PROPERTIES_FILE)) {
+			Properties server_properties = new Properties();
+			server_properties.load(propertiesStream);
+
+			server_properties.setProperty("enable-whitelist", String.valueOf(status));
+			try (OutputStream propertiesOut = new FileOutputStream(SERVER_PROPERTIES_FILE)) {
+				server_properties.store(propertiesOut, "server.properties updated");
+			}
+		} catch (IOException e) {
+			LOGGER.error("Cannot save new whitelist status to server.properties", e);
+		}
 	}
 }
