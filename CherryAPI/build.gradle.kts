@@ -14,7 +14,7 @@ group = "delta.cion.cherry.api"
 version = projectVersion
 
 dependencies {
-	compileOnly("net.minestom:minestom-snapshots:$minestomVersion")
+	implementation("net.minestom:minestom-snapshots:$minestomVersion")
 	implementation("ch.qos.logback:logback-classic:${logbackVersion}")
 	implementation("org.jline:jline:${jlineVersion}")
 	implementation("org.json:json:${jsonVersion}")

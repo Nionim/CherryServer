@@ -19,7 +19,7 @@ tasks {
 
 	jar {
 		manifest {
-			attributes["Main-Class"] = "delta.cion.cherry.CherryServer"
+			attributes["Main-Class"] = "delta.cion.cherry.server.CherryServer"
 		}
 	}
 

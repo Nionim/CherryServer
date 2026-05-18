@@ -1,5 +1,7 @@
 package delta.cion.cherry.server.plugin;
 
+import delta.cion.cherry.api.Plugin;
+import delta.cion.cherry.server.CherryServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +64,10 @@ public class PluginLoader {
 			Class<?> clazz = Class.forName(mainClassName, true, classLoader);
 			Object instance = clazz.getDeclaredConstructor().newInstance();
 
-			if (instance instanceof Plugin) return (Plugin) instance;
+			if (instance instanceof Plugin) {
+				((Plugin) instance).setGlobalEventHandler(CherryServer.getGlobalEventHandler());
+				return (Plugin) instance;
+			}
 			else {
 				LOGGER.error("Class {} does not implement Plugin", mainClassName);
 				return null;

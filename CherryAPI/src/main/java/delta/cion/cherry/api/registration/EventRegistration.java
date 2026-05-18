@@ -1,4 +1,4 @@
-package delta.cion.cherry.server.event.registration;
+package delta.cion.cherry.api.registration;
 
 import net.minestom.server.event.Event;
 import java.util.function.Consumer;

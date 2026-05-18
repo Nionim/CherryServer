@@ -1,6 +1,6 @@
-package delta.cion.cherry.server.event.registration;
+package delta.cion.cherry.api.registration;
 
-import delta.cion.cherry.server.CherryServer;
+import delta.cion.cherry.api.Plugin;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventListener;
 import net.minestom.server.event.EventNode;
@@ -34,11 +34,11 @@ public class DeltaEvent<T extends Event> implements AutoCloseable {
 	}
 
 	public void register() {
-		CherryServer.getGlobalEventHandler().addChild(this.MY_NODE);
+		Plugin.getGlobalEventHandler().addChild(this.MY_NODE);
 	}
 
 	public void unregister() {
-		CherryServer.getGlobalEventHandler().removeChild(this.MY_NODE);
+		Plugin.getGlobalEventHandler().removeChild(this.MY_NODE);
 	}
 
 	public UUID getEventUuid() {

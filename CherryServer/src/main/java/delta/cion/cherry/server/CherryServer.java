@@ -1,11 +1,13 @@
 package delta.cion.cherry.server;
 
-import delta.cion.cherry.server.command.CommandInit;
+import delta.cion.cherry.api.Plugin;
+import delta.cion.cherry.server.command.ReloadCommand;
+import delta.cion.cherry.server.command.StopCommand;
 import delta.cion.cherry.server.config.property.PropertiesInit;
+import delta.cion.cherry.server.console.ConsoleHandler;
 import delta.cion.cherry.server.event.events.PlayerJoinEvent;
 import delta.cion.cherry.server.init.ServerBranding;
 import delta.cion.cherry.server.motd.MOTDHandler;
-import delta.cion.cherry.server.console.ConsoleHandler;
 import delta.cion.cherry.server.plugin.PluginManager;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.GlobalEventHandler;
@@ -30,15 +32,17 @@ public class CherryServer {
 	private void start() {
 		initConfigs();
 
+		Plugin.setGlobalEventHandler(GLOBAL_EVENT_HANDLER);
+
 		MOTDHandler.registerVanillaMOTD();
 		PlayerJoinEvent.register();
 
 		PluginManager.init();
 		setBranding();
 
-		CommandInit commandInit = new CommandInit();
+		new StopCommand().register();
+		new ReloadCommand().register();
 		new ConsoleHandler();
-		commandInit.init();
 
 		String address = DEFAULT_ADDRESS;
 		int port = DEFAULT_PORT;

@@ -27,6 +27,7 @@ public class ConsoleHandler {
 		try {
 			Terminal TERMINAL = TerminalBuilder.builder().dumb(true).build();
 			READER = LineReaderBuilder.builder().terminal(TERMINAL).build();
+			READER.setOpt(LineReader.Option.DISABLE_EVENT_EXPANSION);
 			CONSOLE_SENDER = new ConsoleSender();
 			Thread CONSOLE_THREAD = new Thread(this::run);
 			CONSOLE_THREAD.start();

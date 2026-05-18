@@ -7,7 +7,7 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.event.server.ServerListPingEvent;
 import net.minestom.server.network.player.PlayerConnection;
 import net.minestom.server.ping.ResponseData;
-import delta.cion.cherry.server.event.registration.DeltaEvent;
+import delta.cion.cherry.api.registration.DeltaEvent;
 import net.minestom.server.utils.identity.NamedAndIdentified;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

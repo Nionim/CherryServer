@@ -1,6 +1,6 @@
 package delta.cion.cherry.server.event.events;
 
-import delta.cion.cherry.server.event.registration.DeltaEvent;
+import delta.cion.cherry.api.registration.DeltaEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.ComponentSerializer;

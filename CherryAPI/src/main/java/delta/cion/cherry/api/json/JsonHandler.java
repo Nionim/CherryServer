@@ -1,4 +1,4 @@
-package delta.cion.cherry.server.config.json;
+package delta.cion.cherry.api.json;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

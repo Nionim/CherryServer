@@ -1,4 +1,4 @@
-package delta.cion.cherry.server.command.registration;
+package delta.cion.cherry.api.command;
 
 import net.minestom.server.command.builder.Command;
 
