@@ -6,6 +6,7 @@ import delta.cion.cherry.server.command.StopCommand;
 import delta.cion.cherry.server.command.WhitelistCommand;
 import delta.cion.cherry.server.config.property.PropertiesHandler;
 import delta.cion.cherry.server.console.ConsoleHandler;
+import delta.cion.cherry.server.console.LogbackConfig;
 import delta.cion.cherry.server.init.ServerBranding;
 import delta.cion.cherry.server.motd.MOTDHandler;
 import delta.cion.cherry.server.plugin.PluginManager;
@@ -20,10 +21,12 @@ import java.util.Properties;
 public class CherryServer {
 
 	private static final boolean DEFAULT_OPEN_SERVER_TO_LAN = true;
+	private static final boolean DEFAULT_DEBUG_STATUS = false;
 	private static final String DEFAULT_SERVER_ADDRESS = "0.0.0.0";
 	private static final int DEFAULT_SERVER_PORT = 25565;
 
 	private static boolean openToLan = DEFAULT_OPEN_SERVER_TO_LAN;
+	private static boolean debugStatus = DEFAULT_DEBUG_STATUS;
 	private static String serverAddress = DEFAULT_SERVER_ADDRESS;
 	private static int serverPort = DEFAULT_SERVER_PORT;
 
@@ -50,6 +53,7 @@ public class CherryServer {
 		new WhitelistCommand().register();
 		new ConsoleHandler();
 
+		LogbackConfig.enableDebugLogs(debugStatus);
 		SERVER.start(serverAddress, serverPort);
 		if (openToLan) OpenToLAN.open();
 		LOGGER.info("Server started on {}:{}.", serverAddress, serverPort);
@@ -93,8 +97,10 @@ public class CherryServer {
 	private static void loadConfig() {
 		Properties server_properties = PropertiesHandler.getProperties("server.properties");
 		if (server_properties == null) return;
-		serverAddress = server_properties.getProperty("server-ip");
 		serverPort = Integer.parseInt(server_properties.getProperty("server-port"));
+		serverAddress = server_properties.getProperty("server-ip");
+
+		debugStatus = Boolean.getBoolean(server_properties.getProperty("debug-mode"));
 		openToLan = Boolean.getBoolean(server_properties.getProperty("open-lan"));
 	}
 }
