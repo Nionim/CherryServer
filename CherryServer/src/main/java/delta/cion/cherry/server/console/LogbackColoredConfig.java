@@ -1,4 +1,4 @@
-package delta.cion.cherry.server;
+package delta.cion.cherry.server.console;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;

@@ -1,4 +1,4 @@
-package delta.cion.cherry.server.сonsole;
+package delta.cion.cherry.server.console;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandSender;
